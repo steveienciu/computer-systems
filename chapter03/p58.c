@@ -15,8 +15,6 @@ Write C code for decode2 that will have an effect equivalent to the assembly
 code shown.
 */
 
-#include <stdio.h>
-
 long decode2(long x, long y, long z)
 {
 	long diff = y - z;
