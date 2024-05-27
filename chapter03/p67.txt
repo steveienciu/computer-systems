@@ -1,0 +1,107 @@
+typedef struct {
+ long a[2];
+ long *p;
+} strA;
+
+typedef struct {
+ long u[2];
+ long q;
+} strB;
+
+strB process(strA s) {
+ strB r;
+ r.u[0] = s.a[1];
+ r.u[1] = s.a[0];
+ r.q = *s.p;
+ return r;
+}
+
+long eval(long x, long y, long z) {
+ strA s;
+ s.a[0] = x;
+ s.a[1] = y;
+ s.p = &z;
+ strB r = process(s);
+ return r.u[0] + r.u[1] + r.q;
+}
+
+strB process(strA s)
+process:
+ movq %rdi, %rax
+ movq 24(%rsp), %rdx
+ movq (%rdx), %rdx
+ movq 16(%rsp), %rcx
+ movq %rcx, (%rdi)
+ movq 8(%rsp), %rcx
+ movq %rcx, 8(%rdi)
+ movq %rdx, 16(%rdi)
+ ret
+
+long eval(long x, long y, long z)
+x in %rdi, y in %rsi, z in %rdx
+eval:
+ subq $104, %rsp
+ movq %rdx, 24(%rsp)
+ leaq 24(%rsp), %rax
+ movq %rdi, (%rsp)
+ movq %rsi, 8(%rsp)
+ movq %rax, 16(%rsp)
+ leaq 64(%rsp), %rdi
+ call process
+ movq 72(%rsp), %rax
+ addq 64(%rsp), %rax
+ addq 80(%rsp), %rax
+ addq $104, %rsp
+ ret
+
+ a) the stack before process is called is 
+
+ 0  -------------
+ 		x
+ 8  -------------
+ 		y
+ 16 -------------
+ 		&z
+ 24 ------------
+ 		z
+ 32 ------------
+ .
+ .
+ .
+ 64 ------------
+ .
+ .
+ .
+ 104------------ %rsp
+
+ b) eval passes 64 + %rsp in its call to process
+
+ c) process access the contents by using the same offsets that were used in eval to move the contents from the stack into registers for use
+
+ d) it ueses the offset of the stack from the process function and adds the contents into the return register
+
+ e) the stack after process is called is 
+
+ 0  -------------
+        x
+ 8  -------------
+        y
+ 16 -------------
+        &z
+ 24 ------------
+        z
+ 32 ------------
+ .
+ .
+ .
+ 64 ------------
+ 		y
+ 72 ------------
+ 		x
+ 80 ------------
+		z
+ 88 ------------
+ .
+ .
+ .
+ 104------------ %rsp
