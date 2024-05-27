@@ -1,0 +1,23 @@
+find the values of the array indexes using the assembly and C code below
+
+long A[R][S][T];
+
+long store_ele(long i, long j, long k, long *dest)
+{
+ *dest = A[i][j][k];
+ return sizeof(A);
+}
+
+leaq (%rsi,%rsi,2), %rax ; 3j => rax
+ leaq (%rsi,%rax,4), %rax ; 13j => rax
+ movq %rdi, %rsi ; i => rsi
+ salq $6, %rsi ; 64i => rsi
+ addq %rsi, %rdi ; 65i => rdi
+ addq %rax, %rdi ; 65i + 13j => rdi
+ addq %rdi, %rdx ; 65i + 13j + k => rdx
+ movq A(,%rdx,8), %rax ; xA + 8(65i + 13j +k) => rax
+ movq %rax, (%rcx) ; put address of array into the memory address located at rcx
+ movl $3640, %eax ; return total size of array
+ ret
+
+R = 7; S = 5; T = 13
