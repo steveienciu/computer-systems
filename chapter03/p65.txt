@@ -1,0 +1,34 @@
+The following code transposes the elements of an M × M array, where M is a
+constant defined by #define:
+void transpose(long A[M][M]) {
+ long i, j;
+ for (i = 0; i < M; i++)
+  for (j = 0; j < i; j++) {
+  long t = A[i][j];
+  A[i][j] = A[j][i];
+  A[j][i] = t;
+  }
+}
+When compiled with optimization level -O1, gcc generates the following code
+for the inner loop of the function:
+.L6:
+ movq (%rdx), %rcx
+ movq (%rax), %rsi
+ movq %rsi, (%rdx)
+ movq %rcx, (%rax)
+ addq $8, %rdx
+ addq $120, %rax
+ cmpq %rdi, %rax
+ jne .L6
+
+a) Which register holds a pointer to array element A[i][j]
+
+%rdx because of instruction addq $8, %rdx which moves the address by 8 bytes (size of long) to the next column. This needs to be done to prep the next tranpose operation
+
+b) Which register holds a pointer to array element A[j][i]
+
+%rax because of instruction addq $120, %rax which moves address by 120 bytes which gets it to the oppostite spot, in view of transpose. This needs to be done to prep the next transpose operation
+
+c) What is the value of M
+
+M=120/8=15
