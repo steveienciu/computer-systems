@@ -1,0 +1,40 @@
+In the following code, A and B are constants defined with #define:
+typedef struct {
+ int x[A][B]; /* Unknown constants A and B */
+ long y;
+} str1;
+
+typedef struct {
+ char array[B];
+ int t;
+ short s[A];
+ long u;
+} str2;
+
+void setVal(str1 *p, str2 *q) {
+ long v1 = q->t;
+ long v2 = q->u;
+ p->y = v1+v2;
+}
+
+Gcc generates the following code for setVal:
+
+void setVal(str1 *p, str2 *q)
+p in %rdi, q in %rsi
+setVal:
+ movslq 8(%rsi), %rax
+ addq 32(%rsi), %rax
+ movq %rax, 184(%rdi)
+ ret
+
+What are the values of A and B? (The solution is unique.)
+
+Answer:
+
+from the assembly, can see that B can be at most 8. Can also see that A can be at most 10 because int is 4 bytes so have 8+4=12 then s array can fill up the next 32-12=20 bytes and since short takes up 2 bytes of memory get 20/2=10
+
+from movq %rax, 184(%rdi), can see that 4AB=184 -> AB=46 (multiply by 4 since int takes up 4 bytes of memory)
+
+now we can brute force this to find the pair of numbers that work. A needs to be greater than 6 becasue if less than 6 we would not need to add the memory location from 32+%rsi, it would be 24 or less. We also need AB > 40 and AB <= 48 and the only combination that gives us that is A=9 and B=5
+
+Therefore, the answer is A=9 and B=5
