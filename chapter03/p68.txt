@@ -1,4 +1,5 @@
 In the following code, A and B are constants defined with #define:
+
 typedef struct {
  int x[A][B]; /* Unknown constants A and B */
  long y;
