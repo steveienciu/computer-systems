@@ -26,6 +26,13 @@ int main()
 	return 0;
 }
 
+/*
+ * different times for each function:
+ * poly: 100ns
+ * o_poly: 50.8ns
+ *
+ * on my machine 3x3 loop unrolling with some reassociation proved the be the quickest variation
+ */
 double poly(double a[], double x, long degree)
 {
 	long i;
