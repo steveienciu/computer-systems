@@ -1,0 +1,14 @@
+Repeat Problem 6.21 for memory address 0x16e8
+
+A. Address format in binary
+
+1011011101000
+
+B. Memory reference 
+
+Parameter				Value
+Cache offset            0x0
+Cache index             0x2
+Cache tag               0xb7
+Cache hit               no
+Cache byte returned     --

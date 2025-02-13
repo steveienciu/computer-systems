@@ -1,0 +1,16 @@
+Suppose we have a system with the following properties:
+- memory is byte addressable 
+- memory accesses are to 1-byte words
+- addresses are 13 bits wide
+- cache is 4-way set associative, with 4-byte block size, and eight sets
+
+A. What is the size of this cache in bytes:
+
+C=E*B*S=4*4*8=128 bytes
+
+B. Indicate the fields that would be used to determine the following: CO (cach block offset),
+CI (cache set index), and CT (cache tag)
+
+CO: 0-1
+CI: 2-4
+CT: 8

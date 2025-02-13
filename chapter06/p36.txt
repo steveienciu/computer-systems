@@ -1,0 +1,47 @@
+This problem tests your ability to predict the cache behavior of C code. You are
+given the following code to analyze
+
+int x[2][128];
+int i;
+int sum = 0;
+
+for (i = 0; i < 128; i++) {
+    sum += x[0][i] * x[1][i];
+}
+
+Assume we execute this under the following conditions:
+- sizeof(int) = 4
+- Array x begins at memory address 0x0 and is stored in row-major order
+- In each case below, the cache is initially empty
+- The only memory accesses are to the entries of the array x. All other variables
+are stored in registers
+
+Given these assumptions, estimate the miss rates for the following cases
+
+A. Assume the cache is 512 bytes, direct-mapped, with 16-byte cache
+blocks
+
+This will give a 100% miss rate because of cache thrashing. The cache will get updated after
+every read
+
+B. What is the miss rate if we double the cache size to 1,024 bytes
+
+Since the cache has the ability to hold all daat entries, cache will only miss once calling on new 
+set. Therefore, have miss rate of 25%
+
+C. Now assume the cache is 512 bytes, two-way set associative using
+an LRU replacement policy, with 16-byte cache blocks
+
+The cache miss rate will be the same as B for the same reason. 25% miss rate
+
+D. For case 3, will a larger cache size help to reduce the miss rate? Why or
+why not
+
+It will not help reduce miss rate since only misses in case 3 are cold misses and block size is kept 
+the same which would aid in the miss rate
+
+E. For case 3, will a larger block size help to reduce the miss rate? Why or why
+not
+
+Yes, this will reduce the miss rate since will have more consectutive hits before we need to fetch a new
+block of data. For example, if the block size is 32 bytes it will halve the miss rate to 12.5%

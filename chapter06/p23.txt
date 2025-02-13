@@ -1,0 +1,9 @@
+Estimate average time (in ms) to access sector on following disk
+Parameter							  Value
+Rotational rate						  12,000 rpm
+Tavg-seek							  3 ms
+Average number of sector/tracks		  500
+
+Tavg-rotation=0.5*1/12000*60/1=2.5ms
+Tavg-transfer=1/12000*1/500*60/1=0.01ms
+Taccess=3+2.5+0.01=5.51ms

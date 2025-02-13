@@ -1,0 +1,11 @@
+Given the assumptions in Problem 6.41, what percentage of writes in the following
+code will hit in the cache
+
+int *iptr = (int *)buffer;
+for (; iptr < ((int *)buffer + 640 * 480); iptr++) {
+    *iptr = 0;
+}
+
+Since this it working at the int level (4-bytes), we will have a hit rate of 50% since block size
+is only 8-bytes long. This can still have a better performance than problem 6.42 since working at 
+the int level instead of char level

@@ -1,0 +1,39 @@
+You are currently working on a function to blank the screen buffer before drawing the
+next frame. The screen you are working with is a 640 × 480 array of pixels. The machine 
+you are working on has a 32 KB direct-mapped cache with 8-byte lines.The C structures you
+are using are as follows:
+
+struct pixel {
+    char r;
+    char g;
+    char b;
+    char a;
+};
+
+struct pixel buffer[480][640];
+
+int i, j;
+char *cptr;
+int *iptr;
+
+Assume the following:
+- sizeof(char) = 1 and sizeof(int) = 4
+- buffer begins at memory address 0
+- The cache is initially empty
+- The only memory accesses are to the entries of the array buffer. Variables i,
+j, cptr, and iptr are stored in registers.
+
+What percentage of writes in the following code will hit in the cache
+
+for (j = 639; j >= 0; j--) {
+    for (i = 479; i >= 0; i--) {
+        buffer[i][j].r = 0;
+        buffer[i][j].g = 0;
+        buffer[i][j].b = 0;
+        buffer[i][j].a = 0;
+    }
+}
+
+Have 8-byte block in each set which allows us to cache 8 chars (or two struct elements) in each set. 
+However, since using column-major accessing, only 4 of those 8 elements are "in a row" with what we
+need. Therefore, 75% of the writes will hit

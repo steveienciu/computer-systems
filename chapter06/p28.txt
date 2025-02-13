@@ -1,0 +1,18 @@
+This problem concerns the cache in Practice Problem 6.12
+
+A. List all the hex memory addresses that will hit in set 2
+
+Nothing in cache for set 2
+
+B. List all the hex memory addresses that will hit in set 4
+
+0x18f0, 0x18f1, 0x18f2, 0x18f3
+0x00b0, 0x00b1, 0x00b2, 0x00b2
+
+C. List all the hex memory addresses that will hit in set 5
+
+0x0e34, 0x0e35, 0x0e36, 0x0e37
+
+D. List all the hex memory addresses that will hit in set 6
+
+0x1bdc, 0x1bdd, 0x1bde, 0x1bdf

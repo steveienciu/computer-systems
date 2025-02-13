@@ -1,0 +1,20 @@
+Suppose have a system with the following properties:
+- memory is byte addressable
+- memory access are to 1-bye words
+- addresses are 12 bits wide
+- cache is two-way set associative, with 4-byte block size, and four sets
+
+A. Indicate fields that would be used to determine the following: CO (cache block offset), 
+CI (chache set index), and CT (cache tag)
+
+CO: occupies bits 0-1
+CI: occupies bits 2-3
+CT: occupies bits 4-11
+
+B. For each of following memory access, indicate if it will be cache hit or miss when carried out 
+in sequence as listed
+
+Operation	Address	   Hit 	   Read value
+read        0x834	   miss    --
+write       0x836      hit     unknown
+read        0xffd      hit     0xc0

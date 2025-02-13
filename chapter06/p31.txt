@@ -1,0 +1,15 @@
+Suppose that program using cache in Problem 6.30 refrences the 1-byte word at address 0x071a.
+Indicate cache entry accessed and cache byte vakue returned in hex is applicable 
+
+A. Address format in binary
+
+0011100011010
+
+B. Memory reference
+
+Parameter				Value
+Block offset            0x2
+Index                   0x6
+Cache tag               0x38
+Cache hit               yes
+Cache byte returned     0xeb

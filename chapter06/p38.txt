@@ -1,0 +1,42 @@
+Have machine with a 1,024-byte direct-mapped data cache with 16-byte blocks.
+You are given the following definitions
+
+struct point_color {
+    int c;
+    int m;
+    int y;
+    int k;
+};
+
+struct point_color square[16][16];
+int i, j;
+
+Assume the following
+- sizeof(int) = 4
+- square begins at memory address 0
+- The cache is initially empty
+- The only memory accesses are to the entries of the array square. Variables i
+and j are stored in registers
+
+Determine the cache performance of the following code
+for (i = 15; i >= 0; i--) {
+    for (j = 15; j >= 0; j--) {
+        square[i][j].c = 0;
+        square[i][j].m = 0;
+        square[i][j].y = 1;
+        square[i][j].k = 0;
+    }
+}
+
+A. What is the total number of writes
+
+16*16*4=1024
+
+B. What is the total number of writes that hit in the cache
+
+The struct is 16 bytes long which fits inside a 16-byte block which is what we have here. Therefore, 
+there are 768 wirtes that hit
+
+C. What is the hit rate
+
+hit rate=768/1024=75%

@@ -1,0 +1,20 @@
+Suppose that 2 MB file consisting of 512-byte logical blocks is stored on a disk 
+drive with the following characteristics
+Parameter							 Value
+Rotational rate						 18,000 rpm
+Tavg-seek							 8 ms
+Average number of sectors/tracks	 2,000
+Surfaces							 4
+Sector size							 512 bytes
+
+A. Estimate the optimal time (in ms) required to read the file given
+the best possible mapping of logical blocks to disk sectors (i.e., sequential)
+
+Tavg-transfer=1/18000*1/2000*60/1=0.001ms
+Tavg-rotation=1/2*1/18000*60/1=1.6ms
+T=Tavg-seek+Tavg-rotation+(2MB/512)*Tavg-transfer=13.6ms
+
+B. Estimate the time (in ms) required to read the file if blocks
+are mapped randomly to disk sectors
+
+T=(Tavg-seek+Tavg-rotation+Tavg-transfer)*(2MB/512)=38.404s
