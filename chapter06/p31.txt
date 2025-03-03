@@ -7,7 +7,7 @@ A. Address format in binary
 
 B. Memory reference
 
-Parameter				Value
+Parameter               Value
 Block offset            0x2
 Index                   0x6
 Cache tag               0x38
