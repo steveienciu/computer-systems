@@ -6,7 +6,7 @@ A. Address format in binary
 
 B. Memory reference 
 
-Parameter				Value
+Parameter               Value
 Cache offset            0x0
 Cache index             0x2
 Cache tag               0xb7
