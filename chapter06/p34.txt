@@ -25,14 +25,14 @@ For each row and col, indicate whether the access to src[row][col] and
 dst[row][col] is a hit (h) or a miss (m)
 
 dst
-	 c0		c1	   c2     c3
+     c0     c1     c2     c3
 r0   m      m      m      m
 r1   m      m      m      m
 r2   m      m      m      m
 r3   m      m      m      m
 
 src
-	 c0     c1     c2     c3
+     c0     c1     c2     c3
 r0   m      m      h      m
 r1   m      h      m      h
 r2   m      m      h      m
