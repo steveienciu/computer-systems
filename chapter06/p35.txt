@@ -3,14 +3,14 @@ Repeat Problem 6.34 for a cache with a total size of 128 data bytes
 The entire data set can fit in the cache, therefore, can easily find results
 
 dst
-	 c0    c1    c2    c4
+     c0    c1    c2    c4
 r0   m     h     h     h
 r1   m     h     h     h 
 r2   m     h     h     h
 r3   m     h     h     h
 
 src
-	 c0	   c1    c2    c4
+     c0	   c1    c2    c4
 r0   m     h     h     h
 r1   m     h     h     h
 r2   m     h     h     h
