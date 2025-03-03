@@ -14,7 +14,7 @@ CT: occupies bits 4-11
 B. For each of following memory access, indicate if it will be cache hit or miss when carried out 
 in sequence as listed
 
-Operation	Address	   Hit 	   Read value
-read        0x834	   miss    --
+Operation   Address    Hit     Read value
+read        0x834      miss    --
 write       0x836      hit     unknown
 read        0xffd      hit     0xc0
