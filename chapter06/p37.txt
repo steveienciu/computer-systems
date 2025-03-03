@@ -53,7 +53,7 @@ and N = 60
 
 C = 4096; B = 16; E = 1; S = 256
 
-Function	N=64	N=60
+Function    N=64    N=60
 sumA        25%     25%
 sumB        100%    100%
 sumC        50%     50%
