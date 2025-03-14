@@ -1,0 +1,19 @@
+A. How many object files are contained in the versions of libc.a and libm.a
+on your system?
+
+ar t /usr/lib/x86_64-linux-gnu/libc.a | wc -l
+2211
+
+ar t /usr/lib/x86_64-linux-gnu/libm-2.39.a | wc -l
+801
+
+B. Does gcc -Og produce different executable code than gcc -Og -g?
+
+Yes, the command with the -g flag produces another segement within the object file 
+for debug metadata
+
+C. What shared libraries does the gcc driver on your system use?
+
+linux-vdso.so.1 (0x00007a19d45eb000)
+libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007a19d4200000)
+/lib64/ld-linux-x86-64.so.2 (0x00007a19d45ed000)
