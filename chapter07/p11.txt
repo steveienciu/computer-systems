@@ -1,0 +1,7 @@
+The program header in Figure 7.14 indicates that the data segment occupies 0x230
+bytes in memory. However, only the first 0x228 bytes of these come from the
+sections of the executable file. What causes this discrepancy?
+
+The discrepancy of 8 bytes is caused by the .bss segment of an executable file. 
+.bss segment does not take up any space in the file but these variables take up
+space in memory 
