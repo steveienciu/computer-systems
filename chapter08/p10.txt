@@ -1,0 +1,15 @@
+In this chapter, we have introduced some functions with unusual call and return
+behaviors: getenv, setenv, unsetenv, and execve. Match each function with one
+of the following behaviors:
+
+A. Called once, returns only if there is an error
+
+execve
+
+B. Called once, returns nothing
+
+setenv, unsetenv
+
+C. Called once, returns either a pointer or NULL
+
+getenv
