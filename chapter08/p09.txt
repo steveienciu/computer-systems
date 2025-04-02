@@ -1,0 +1,17 @@
+Consider four processes with the following starting and ending times:
+Process   Start Time   End Time
+A         6            8
+B         3            5
+C         4            7
+D         2            9
+
+For each pair of processes, indicate whether they run concurrently (Y) or
+not (N):
+
+Process pair   Concurrent?
+AB             N
+AC             Y
+AD             Y
+BC             Y
+BD             Y
+CD             Y
