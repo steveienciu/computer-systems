@@ -24,6 +24,7 @@ int main()
 	exit(0);
 }
 
-/* this will print 8 lines onto stdout. it will loop 3 times and double the number of processes
+/*
+ * this will print 8 lines onto stdout. it will loop 3 times and double the number of processes
  * each time
  */
