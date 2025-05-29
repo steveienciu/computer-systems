@@ -1,0 +1,12 @@
+Determine the block sizes and header values that would result from the following sequence of malloc requests. 
+Assumptions: (1) The allocator maintains double-word alignment and uses an implicit free list with the block 
+format from Figure 9.35. (2) Block sizes are rounded up to the nearest multiple of 8 bytes
+
+Request      Block size (decimal bytes)     Block header (hex)
+malloc(2)    8                              0x9              
+malloc(9)    16                             0x11
+malloc(15)   24                             0x18
+malloc(20)   24                             0x18
+
+since the header takes up 4 bytes, need to add that to the total number of bytes getting allocated
+to get the total block size 
