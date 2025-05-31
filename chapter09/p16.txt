@@ -1,0 +1,10 @@
+Determine the minimum block size for each of the following combinations of alignment 
+requirements and block formats. Assumptions: Explicit free list, 4-byte pred and succ 
+pointers in each free block, zero-size payloads are not allowed, and headers and 
+footers are stored in 4-byte words
+
+Alignment      Allocated block           Free block           Min block size (bytes)
+Single word    Header and footer         Header and footer    16
+Single word    Header, but no footer     Header and footer    16
+Double word    Header and footer         Header and footer    16
+Double word    Header, but no footer     Header and footer    16
