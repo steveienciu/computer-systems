@@ -1,0 +1,29 @@
+Repeat Problem 9.11 for the following address.
+Virtual address: 0x03a9
+
+A. Virtual address format 
+
+0001110101001
+
+B. Address translation 
+
+Parameter             Value
+VPN                   0xe
+TLB index             0x2
+TLB tag               0x3
+TLB hit? (y/n)        n
+Page fault? (y/n)     n
+PPN                   0x11
+
+C. Physical address format 
+
+010001101001
+
+D. Physical memory reference 
+
+Parameter             Value
+Byte offset           0x1
+Cache index           0xa
+Cache tag             0x11
+Cache hit? (y/n)      n
+Cache byte returned   --

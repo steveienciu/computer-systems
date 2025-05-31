@@ -1,0 +1,16 @@
+Repeat Problem 9.11 for the following address.
+Virtual address: 0x0040
+
+A. Virtaul address format 
+
+0x0000001000000
+
+B. Address translation
+
+Parameter             Value
+VPN                   0x1
+TLB index             0x1
+TLB tag               0x0
+TLB hit? (y/n)        n
+Page fault? (y/n)     y
+PPN                   -- 
