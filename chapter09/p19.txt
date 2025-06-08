@@ -1,0 +1,29 @@
+You are given three groups of statements relating to memory management and garbage collection below. In each group, 
+only one statement is true. Your task is to indicate which statement is true.
+
+1. 
+(a) In a buddy system, up to 50% of the space can be wasted due to internal fragmentation.
+(b) The first-fit memory allocation algorithm is slower than the best-fit algorithm (on average).
+(c) Deallocation using boundary tags is fast only when the list of free blocks is ordered according to increasing 
+memory addresses.
+(d) The buddy system suffers from internal fragmentation, but not from external fragmentation.
+
+(a)
+
+2. 
+(a) Using the first-fit algorithm on a free list that is ordered according to decreasing block sizes results in 
+low performance for allocations, but it avoids external fragmentation.
+(b) For the best-fit method, the list of free blocks should be ordered according to increasing memory addresses.
+(c) The best-fit method chooses the largest free block into which the requested segment fits.
+(d) Using the first-fit algorithm on a free list that is ordered according to increasing block sizes is equivalent 
+to using the best-fit algorithm.
+
+(d)
+
+3. Mark&Sweep garbage collectors are called conservative if
+(a) They coalesce freed memory only when a memory request cannot be satisfied.
+(b) They treat everything that looks like a pointer as a pointer.
+(c) They perform garbage collection only when they run out of memory.
+(d) They do not free memory blocks forming a cyclic list.A
+
+(b)
