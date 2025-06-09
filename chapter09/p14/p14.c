@@ -44,6 +44,12 @@ int main()
         printf("%c", new_fd[i]);
     }
 
+    /* ensure that remove allocated memory */
+    if (munmap(new_fd, count) == -1) {
+        printf("Unable to deallocate memory. Terminating");
+        exit(EXIT_FAILURE);
+    }
+
     if (close(fd) == -1) {
         printf("Closing file %s failed. Terminating\n", FILE_NAME);
         exit(EXIT_FAILURE);
