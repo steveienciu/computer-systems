@@ -46,7 +46,7 @@ static void *coalesce(void *bp);
  */
 int mm_init(void) 
 {
-	mem_init();  /*** homework 9.17 ***/
+    mem_init();
 	
     /* Create the initial empty heap */
     if ((heap_listp = mem_sbrk(4*WSIZE)) == (void *)-1)
@@ -56,9 +56,8 @@ int mm_init(void)
     PUT(heap_listp + (2*WSIZE), PACK(DSIZE, 1)); /* Prologue footer */ 
     PUT(heap_listp + (3*WSIZE), PACK(0, 1));     /* Epilogue header */
     heap_listp += (2*WSIZE);
-	next_fitp = heap_listp;  /*** homework 9.17 ***/
 	
-	 /* Extend the empty heap with a free block of CHUNKSIZE bytes */
+	/* Extend the empty heap with a free block of CHUNKSIZE bytes */
     if (extend_heap(CHUNKSIZE/WSIZE) == NULL) 
         return -1;
     return 0;
@@ -91,14 +90,8 @@ static void *extend_heap(size_t words)
  */
 void mm_free(void *bp)
 {
-	if (bp == 0)   /*** homework 9.17 ***/
-		return;
-	
     size_t size = GET_SIZE(HDRP(bp));
 	
-	if (heap_listp == 0)   /*** homework 9.17 ***/
-		mm_init();
-
     PUT(HDRP(bp), PACK(size, 0));
     PUT(FTRP(bp), PACK(size, 0));
     coalesce(bp);
@@ -138,10 +131,6 @@ static void *coalesce(void *bp)
         bp = PREV_BLKP(bp);
     }
 	
-	/* Make sure the rover isn't pointing into the free block */
-    /* that we just coalesced */
-	if ((next_fitp > (char *)bp) && (next_fitp < NEXT_BLKP(bp)))  /*** homework 9.17 ***/
-		next_fitp = bp;
     return bp;
 }
 
