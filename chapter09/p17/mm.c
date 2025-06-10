@@ -187,18 +187,18 @@ void *mm_malloc(size_t size)
  */
 static void place(void *bp, size_t asize)
 {
-    size_t csize = GET_SIZE(HDRP(bp));   
+    size_t bsize = GET_SIZE(HDRP(bp));   
 
-    if ((csize - asize) >= (2*DSIZE)) { 
+    if ((bsize - asize) >= (2*DSIZE)) { 
         PUT(HDRP(bp), PACK(asize, 1));
         PUT(FTRP(bp), PACK(asize, 1));
         bp = NEXT_BLKP(bp);
-        PUT(HDRP(bp), PACK(csize-asize, 0));
-        PUT(FTRP(bp), PACK(csize-asize, 0));
+        PUT(HDRP(bp), PACK(bsize-asize, 0));
+        PUT(FTRP(bp), PACK(bsize-asize, 0));
     }
     else { 
-        PUT(HDRP(bp), PACK(csize, 1));
-        PUT(FTRP(bp), PACK(csize, 1));
+        PUT(HDRP(bp), PACK(bsize, 1));
+        PUT(FTRP(bp), PACK(bsize, 1));
     }
 }
 
