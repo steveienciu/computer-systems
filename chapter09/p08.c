@@ -8,7 +8,7 @@ staitc void *find_fit(size_t asize)
 {
     void *bp;
 
-    for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; NEXT_BLKP(bp)) {
+    for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
         if (GET_SIZE(HDRP(bp)) <= asize && !GET_ALLOC(HDRP(bp))) {
             return bp;
         }
