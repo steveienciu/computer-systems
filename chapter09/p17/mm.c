@@ -182,22 +182,12 @@ void *mm_malloc(size_t size)
  */
 static void *find_fit(size_t asize)
 {
-    
+    /* Use next fit approach; for p17 */
     for ( ; GET_SIZE(HDRP(next_fitp)) > 0; next_fitp = NEXT_BLKP(next_fitp)) {
         if (GET_SIZE(HDRP(next_fitp)) <= asize && !GET_ALLOC(HDRP(next_fitp))) {
             return next_fitp;
         }
     }
-    
-    /*
-    void *bp;
-
-    for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
-        if (GET_SIZE(HDRP(bp)) <= asize && !GET_ALLOC(HDRP(bp))) {
-            return bp;
-        }
-    }
-    */
 
     return NULL;
 }
