@@ -32,8 +32,9 @@
 #define PREV_BLKP(bp)  ((char *)(bp) - GET_SIZE(((char *)(bp) - DSIZE)))
 
 /* Global variables */
-static char *heap_listp = 0;  /* Pointer to first block */  
-static char *next_fitp;  /* Pointer to next block */
+char *heap_listp = 0;  /* Pointer to first block */  
+/* non-static global variable for testing purposes */
+char *next_fitp;  /* Pointer to next block; part of p17 */
 
 /* Function prototypes for internal helper routines */
 static void *extend_heap(size_t words);
@@ -46,6 +47,9 @@ static void *coalesce(void *bp);
  */
 int mm_init(void) 
 {
+    /* Get the heap system initialized; part of p17 */
+    mem_init();
+
     /* Create the initial empty heap */
     if ((heap_listp = mem_sbrk(4*WSIZE)) == (void *)-1)
         return -1;
@@ -54,10 +58,14 @@ int mm_init(void)
     PUT(heap_listp + (2*WSIZE), PACK(DSIZE, 1)); /* Prologue footer */ 
     PUT(heap_listp + (3*WSIZE), PACK(0, 1));     /* Epilogue header */
     heap_listp += (2*WSIZE);
-	
+
+    next_fitp = heap_listp; /* Initialize variable to first address in heap; part of p17 */
+
 	/* Extend the empty heap with a free block of CHUNKSIZE bytes */
-    if (extend_heap(CHUNKSIZE/WSIZE) == NULL) 
+    if (extend_heap(CHUNKSIZE/WSIZE) == NULL) {
         return -1;
+    }
+
     return 0;
 }
 
@@ -141,8 +149,9 @@ void *mm_malloc(size_t size)
     size_t extendsize; /* Amount to extend heap if no fit */
     char *bp;      
 
-	if (heap_listp == 0)
-		mm_init();
+	if (heap_listp == 0) {
+		int result = mm_init();
+    }
 	
     /* Ignore spurious requests */
     if (size == 0)
@@ -169,6 +178,31 @@ void *mm_malloc(size_t size)
 } 
 
 /* 
+ * find_fit - Find a fit for the block with asize bytes
+ */
+static void *find_fit(size_t asize)
+{
+    
+    for ( ; GET_SIZE(HDRP(next_fitp)) > 0; next_fitp = NEXT_BLKP(next_fitp)) {
+        if (GET_SIZE(HDRP(next_fitp)) <= asize && !GET_ALLOC(HDRP(next_fitp))) {
+            return next_fitp;
+        }
+    }
+    
+    /*
+    void *bp;
+
+    for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
+        if (GET_SIZE(HDRP(bp)) <= asize && !GET_ALLOC(HDRP(bp))) {
+            return bp;
+        }
+    }
+    */
+
+    return NULL;
+}
+
+/* 
  * place - Place block of asize bytes at start of free block bp 
  *         and split if remainder would be at least minimum block size
  */
@@ -188,8 +222,3 @@ static void place(void *bp, size_t asize)
         PUT(FTRP(bp), PACK(bsize, 1));
     }
 }
-
-/*
- * find_fit - Find a fit for a block with asize bytes
- */
-static void *find_fit(size_t asize)
