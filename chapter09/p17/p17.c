@@ -19,3 +19,8 @@ int main()
 
     return 0;
 }
+
+/*
+ * this seems to have worked since when using first-fit search the address of next_fitp remained 
+ * the same, but when using next-fit search the address of next_fitp changed
+ */
