@@ -47,7 +47,7 @@ static void *coalesce(void *bp);
  */
 int mm_init(void) 
 {
-    /* Get the heap system initialized; part of p17 */
+    /* Get the heap system initialized */
     mem_init();
 
     /* Create the initial empty heap */
@@ -59,7 +59,7 @@ int mm_init(void)
     PUT(heap_listp + (3*WSIZE), PACK(0, 1));     /* Epilogue header */
     heap_listp += (2*WSIZE);
 
-    next_fitp = heap_listp; /* Initialize variable to first address in heap; part of p17 */
+    next_fitp = heap_listp; /* Initialize variable to first address in heap */
 
 	/* Extend the empty heap with a free block of CHUNKSIZE bytes */
     if (extend_heap(CHUNKSIZE/WSIZE) == NULL) {
@@ -158,10 +158,11 @@ void *mm_malloc(size_t size)
         return NULL;
 
     /* Adjust block size to include overhead and alignment reqs. */
-    if (size <= DSIZE)
-        asize = 2*DSIZE;
+    /* Adjusted these values for p18 */
+    if (size <= WSIZE)
+        asize = DSIZE;
     else
-        asize = DSIZE * ((size + (DSIZE) + (DSIZE-1)) / DSIZE);
+        asize = DSIZE * ((size + (WSIZE) + (DSIZE-1)) / DSIZE);
 
     /* Search the free list for a fit */
     if ((bp = find_fit(asize)) != NULL) {
@@ -182,7 +183,7 @@ void *mm_malloc(size_t size)
  */
 static void *find_fit(size_t asize)
 {
-    /* Use next fit approach; for p17 */
+    /* Use next fit approach */
     for ( ; GET_SIZE(HDRP(next_fitp)) > 0; next_fitp = NEXT_BLKP(next_fitp)) {
         if (GET_SIZE(HDRP(next_fitp)) <= asize && !GET_ALLOC(HDRP(next_fitp))) {
             return next_fitp;
@@ -202,13 +203,13 @@ static void place(void *bp, size_t asize)
 
     if ((bsize - asize) >= (2*DSIZE)) { 
         PUT(HDRP(bp), PACK(asize, 1));
-        PUT(FTRP(bp), PACK(asize, 1));
+        // PUT(FTRP(bp), PACK(asize, 1)); /* Footer not needed; p18 */
         bp = NEXT_BLKP(bp);
         PUT(HDRP(bp), PACK(bsize-asize, 0));
         PUT(FTRP(bp), PACK(bsize-asize, 0));
     }
     else { 
         PUT(HDRP(bp), PACK(bsize, 1));
-        PUT(FTRP(bp), PACK(bsize, 1));
+        // PUT(FTRP(bp), PACK(bsize, 1)); /* Footer not needed; p18 */
     }
 }
