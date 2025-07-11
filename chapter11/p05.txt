@@ -1,0 +1,7 @@
+Assume that a CGI program needs to send dynamic content to the client. This is typically done 
+by making the CGI program send its content to the standard output. Explain how this content is 
+sent to the client
+
+The content is sent over the client by using the dup2 function to redirect stdout to the 
+connected descriptor that is used by the client. Once that is done, program parses out file
+and runs the file for the client 
