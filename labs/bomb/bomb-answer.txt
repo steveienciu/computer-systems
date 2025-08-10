@@ -1,0 +1,261 @@
+phase 1: Border relations with Canada have never been better.
+
+the user input gets stored in %rdi which can be seen from instruction 400e37 and the string to be guessed
+is stored in %esi. %esi contains the address of the first character in the string which is located at
+0x402400. it will call a function called strings_not_equal which wil determine with the strings are 
+equal and put the result into %rax which will then be tested, line 400eee. If equal (result of the test is
+zero), then the function will return
+
+Phase 2: 1 2 4 8 16 32
+
+again, user input gets stored in %rdi and the answers are stored in %rsi. from the read_six_numbers 
+function there will be six arguments what will be parsed out from the sscanf function. the first one will
+go in %rdx (address 0x401460), second in %rcx (address 0x401463), third in %r8 (address 0x40147c), fourth
+in %r9 (address 0x401478), fifth on the stack (address 0x401470 and 0x401474), and sixth on the stack 
+(address 0x401467 and 0x40146b). Since there are 6 arguments, it will pass instruction 0x40148f since it 
+will be greater than 5, allowing us to proceed
+
+instruction address 0x400f0a will contain the value of the first argument which has to be one because of
+instruction 0x400f0e which will only jump when the values are equal. this will bring us to instruction 
+0x400f30 where %rbx will contain the second argument and %rbp will contain the last, or sixth, argument. 
+Since we are increasing the stack by 4 bytes, thi solidifies the assumption that these are integers. Now, 
+we go to instruction 0x400f17 where we go back 4 bytes to hit the previous number, essentially multiple
+what was in the previous argument by 2 and put that value into the proper location in memory. This loop
+from instruction 0x400f17 to ox400f2e continues until all 6 numbers have been checked
+
+Phase 3: any of the eight possible switch cases with one of them being 0 207
+
+this is another one where sscanf is used to parse out two user inputted variables where the user string 
+starts at address contained in %rdi and the format is stored in %rsi, or specifically, address 0x402fc5.
+by looking at the .rodata segment and looking at address 0x402fc5, able to find the format which was used
+and it was "%d %d". This lines up with the cmp and jg instructions shown in instructions address 0x400f60
+and 0x400fc3, respectively. 
+
+at instruction 0x400f71 can see that the first argument, %rdx, contains the
+variable which will be used for the switch statement located at address 0x402470. from instruction 0x400fca
+and ox400f6f the first argument will need to be between 0-7. again, by looking at the .rodata, we can find
+what instruction address needs to be hit depending on the switch variable used from the jump table
+
+for example, if i inputted 0 as my first argument the jump table would tell me to go to instruction 
+address 0x400f7c, which moves 0xcf to the %eax register which will then get compared with my second input
+from the terminal. the same would be done for the other 7 possibilities
+
+phase 4: 7 0
+
+000000000040100c <phase_4>:
+  40100c:       48 83 ec 18             sub    $0x18,%rsp                     # expand the stack by 0x18
+  401010:       48 8d 4c 24 0c          lea    0xc(%rsp),%rcx                 # move address from that location into %rcx
+  401015:       48 8d 54 24 08          lea    0x8(%rsp),%rdx                 # move the address from that location into %rdx
+  40101a:       be cf 25 40 00          mov    $0x4025cf,%esi                 # move that immediate value into %esi which is the address to the format specifier for sscanf
+  40101f:       b8 00 00 00 00          mov    $0x0,%eax                      # set eax to zero which will return the number of arguments inputted in stdin
+  401024:       e8 c7 fb ff ff          call   400bf0 <__isoc99_sscanf@plt>   # call the sscanf function
+  401029:       83 f8 02                cmp    $0x2,%eax                      # compute eax-0x2
+  40102c:       75 07                   jne    401035 <phase_4+0x29>          # if eax!=0x2, go to instruction address 0x401035
+  40102e:       83 7c 24 08 0e          cmpl   $0xe,0x8(%rsp)                 # compute rdx (first argument from stdin)-0xe
+  401033:       76 05                   jbe    40103a <phase_4+0x2e>          # if %rdx<=0xe, go to instruction address 0x40103a
+  401035:       e8 00 04 00 00          call   40143a <explode_bomb>          # call explode_bomb function
+  40103a:       ba 0e 00 00 00          mov    $0xe,%edx                      # edx=0xe
+  40103f:       be 00 00 00 00          mov    $0x0,%esi                      # esi=0x0
+  401044:       8b 7c 24 08             mov    0x8(%rsp),%edi                 # edi=first user argument
+  401048:       e8 81 ff ff ff          call   400fce <func4>                 # call func4 function
+  40104d:       85 c0                   test   %eax,%eax                      # eax&eax
+  40104f:       75 07                   jne    401058 <phase_4+0x4c>          # jmp if eax!=0
+  401051:       83 7c 24 0c 00          cmpl   $0x0,0xc(%rsp)                 # second user argument-0x0
+  401056:       74 05                   je     40105d <phase_4+0x51>          # if equal, jump to end
+  401058:       e8 dd 03 00 00          call   40143a <explode_bomb>          # ideally ignore
+  40105d:       48 83 c4 18             add    $0x18,%rsp                     # decrease the stack
+  401061:       c3                      ret                                   # return
+
+0000000000400fce <func4>:
+  400fce:       48 83 ec 08             sub    $0x8,%rsp                      # expand the stack by 0x8
+  400fd2:       89 d0                   mov    %edx,%eax                      # eax=edx=0xe
+  400fd4:       29 f0                   sub    %esi,%eax                      # eax=eax-esi=0xe
+  400fd6:       89 c1                   mov    %eax,%ecx                      # ecx=eax=0xe
+  400fd8:       c1 e9 1f                shr    $0x1f,%ecx                     # ecx=0x0
+  400fdb:       01 c8                   add    %ecx,%eax                      # eax=eax+ecx=0xe
+  400fdd:       d1 f8                   sar    $1,%eax                        # eax=0x7
+  400fdf:       8d 0c 30                lea    (%rax,%rsi,1),%ecx             # ecx=rax+rsi*1=0x7
+  400fe2:       39 f9                   cmp    %edi,%ecx                      # ecx-edi
+  400fe4:       7e 0c                   jle    400ff2 <func4+0x24>            # jmp if ecx<=edi
+  400fe6:       8d 51 ff                lea    -0x1(%rcx),%edx                # want to ignore
+  400fe9:       e8 e0 ff ff ff          call   400fce <func4>                 # want to ignore
+  400fee:       01 c0                   add    %eax,%eax                      # want to ignore
+  400ff0:       eb 15                   jmp    401007 <func4+0x39>            # want to ignore
+  400ff2:       b8 00 00 00 00          mov    $0x0,%eax                      # eax=0
+  400ff7:       39 f9                   cmp    %edi,%ecx                      # ecx-edi
+  400ff9:       7d 0c                   jge    401007 <func4+0x39>            # jmp if ecx>=edi
+  400ffb:       8d 71 01                lea    0x1(%rcx),%esi                 # want to ignore
+  400ffe:       e8 cb ff ff ff          call   400fce <func4>                 # want to ignore
+  401003:       8d 44 00 01             lea    0x1(%rax,%rax,1),%eax          # want to ignore
+  401007:       48 83 c4 08             add    $0x8,%rsp                      # decrease the stack
+  40100b:       c3                      ret                                   # return
+
+able to get the first argument from func4 which turns out to be 7 since that is the only number that can
+be both <= and >= to the same number stored in %ecx which is 7
+
+instruction address 0x401051 shows the answer of the second argument. 0x401056 requires that it be equal 
+to zero
+
+phase 5: ionefg
+
+0000000000401062 <phase_5>:
+  401062:       53                      push   %rbx
+  401063:       48 83 ec 20             sub    $0x20,%rsp
+  401067:       48 89 fb                mov    %rdi,%rbx                       # rbx=rdi (user argument)
+  40106a:       64 48 8b 04 25 28 00    mov    %fs:0x28,%rax                   # stack canary value
+  401071:       00 00
+  401073:       48 89 44 24 18          mov    %rax,0x18(%rsp)
+  401078:       31 c0                   xor    %eax,%eax
+  40107a:       e8 9c 02 00 00          call   40131b <string_length>
+  40107f:       83 f8 06                cmp    $0x6,%eax                       # length of input string needs to be 6, takes rdi as argument
+  401082:       74 4e                   je     4010d2 <phase_5+0x70>
+  401084:       e8 b1 03 00 00          call   40143a <explode_bomb>
+  401089:       eb 47                   jmp    4010d2 <phase_5+0x70>
+  40108b:       0f b6 0c 03             movzbl (%rbx,%rax,1),%ecx              # read one byte from memory at rbx+rax*1=rbx, zero extend, then store in ecx
+  40108f:       88 0c 24                mov    %cl,(%rsp)                      # store byte at memory location pointed to by rsp
+  401092:       48 8b 14 24             mov    (%rsp),%rdx                     # move that byte to rdx
+  401096:       83 e2 0f                and    $0xf,%edx                       # get first 4 bits of byte
+  401099:       0f b6 92 b0 24 40 00    movzbl 0x4024b0(%rdx),%edx             # use result of instruction address 0x401096 to index to proper byte
+  4010a0:       88 54 04 10             mov    %dl,0x10(%rsp,%rax,1)           # move resulting byte to address rsp+10
+  4010a4:       48 83 c0 01             add    $0x1,%rax                       # rax=rax+0x1=0x1; first part
+  4010a8:       48 83 f8 06             cmp    $0x6,%rax                       # rax-0x6=-0x5; first part
+  4010ac:       75 dd                   jne    40108b <phase_5+0x29>           # jump taken; first part since this is a loop
+  4010ae:       c6 44 24 16 00          movb   $0x0,0x16(%rsp)                 # null terminate string
+  4010b3:       be 5e 24 40 00          mov    $0x40245e,%esi                  # comparing to string at address 0x40245e which gives us index at word in 0x4024b0
+  4010b8:       48 8d 7c 24 10          lea    0x10(%rsp),%rdi                 # move address into rdi
+  4010bd:       e8 76 02 00 00          call   401338 <strings_not_equal>      # call function
+  4010c2:       85 c0                   test   %eax,%eax
+  4010c4:       74 13                   je     4010d9 <phase_5+0x77>
+  4010c6:       e8 6f 03 00 00          call   40143a <explode_bomb>
+  4010cb:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+  4010d0:       eb 07                   jmp    4010d9 <phase_5+0x77>
+  4010d2:       b8 00 00 00 00          mov    $0x0,%eax                       # eax=0  
+  4010d7:       eb b2                   jmp    40108b <phase_5+0x29>
+  4010d9:       48 8b 44 24 18          mov    0x18(%rsp),%rax
+  4010de:       64 48 33 04 25 28 00    xor    %fs:0x28,%rax
+  4010e5:       00 00
+  4010e7:       74 05                   je     4010ee <phase_5+0x8c>
+  4010e9:       e8 42 fa ff ff          call   400b30 <__stack_chk_fail@plt>
+  4010ee:       48 83 c4 20             add    $0x20,%rsp
+  4010f2:       5b                      pop    %rbx
+  4010f3:       c3  
+
+from instruction address 0x40108b to 0x4010ac we have a loop which iterates through the 6 characters of the 
+user input and selects the proper character from the string stored at memory location 0x4024b0. we know it 
+needs to be a user input of string length 6 because of isntructions 0x40107a and 0x40107f
+
+peeking into the memory location 0x40245e we see that it contains the word "flyers" and we need to get this 
+word by looking at the string in memory location 0x4024b0. the nibble of each character in my input word will
+be the index to the word in 0x4024b0. for example, the index of f is 0x9 which means that the first
+characters nibble in my input needs to be equal to 9 so we pick the first lower case one which is 'i'. this 
+is repeated for the rest of the characters which gives us the answer of ionefg
+
+phase 6: 4 3 2 1 6 5
+
+00000000004010f4 <phase_6>:
+  4010f4:       41 56                   push   %r14
+  4010f6:       41 55                   push   %r13
+  4010f8:       41 54                   push   %r12
+  4010fa:       55                      push   %rbp
+  4010fb:       53                      push   %rbx
+  4010fc:       48 83 ec 50             sub    $0x50,%rsp
+  401100:       49 89 e5                mov    %rsp,%r13                  # copy current stack pointer to r13
+  401103:       48 89 e6                mov    %rsp,%rsi      
+  401106:       e8 51 03 00 00          call   40145c <read_six_numbers>  # this function tells us that we will need 6 integers and where they are stored
+  40110b:       49 89 e6                mov    %rsp,%r14                  # r14=rsp; where numbers were read into
+  40110e:       41 bc 00 00 00 00       mov    $0x0,%r12d                 # r12d=0; assuming a counter
+  401114:       4c 89 ed                mov    %r13,%rbp                  # rbp=r13; where numbers were read into
+  401117:       41 8b 45 00             mov    0x0(%r13),%eax             # eax=(r13) which contains the first number inputted
+  40111b:       83 e8 01                sub    $0x1,%eax                  # eax=eax-0x1; check to see if inuput number is <=6
+  40111e:       83 f8 05                cmp    $0x5,%eax                  # eax-0x5
+  401121:       76 05                   jbe    401128 <phase_6+0x34>
+  401123:       e8 12 03 00 00          call   40143a <explode_bomb>
+  401128:       41 83 c4 01             add    $0x1,%r12d                 # r12d=r12d+0x1; increment counter
+  40112c:       41 83 fc 06             cmp    $0x6,%r12d                 # r12d-0x6; loop condition
+  401130:       74 21                   je     401153 <phase_6+0x5f>      
+  401132:       44 89 e3                mov    %r12d,%ebx                 # ebx=r12d
+  401135:       48 63 c3                movslq %ebx,%rax                  # rax=ebx
+  401138:       8b 04 84                mov    (%rsp,%rax,4),%eax         # move next number into eax
+  40113b:       39 45 00                cmp    %eax,0x0(%rbp)             # ensure that no two numbers are the same
+  40113e:       75 05                   jne    401145 <phase_6+0x51>
+  401140:       e8 f5 02 00 00          call   40143a <explode_bomb>
+  401145:       83 c3 01                add    $0x1,%ebx                  # ebx=ebx+0x1
+  401148:       83 fb 05                cmp    $0x5,%ebx                  # ebx-0x5; check value of counter
+  40114b:       7e e8                   jle    401135 <phase_6+0x41>      # go back to address to ensure that no numbers are the same
+  40114d:       49 83 c5 04             add    $0x4,%r13                  # r13=r13+4; move pointer to next input number 
+  401151:       eb c1                   jmp    401114 <phase_6+0x20>      # jump to 0x401114 to repeat check to see if any two numbers are the same
+  401153:       48 8d 74 24 18          lea    0x18(%rsp),%rsi            # put address of last input into rsi
+  401158:       4c 89 f0                mov    %r14,%rax                  # rax=r14; first user input
+  40115b:       b9 07 00 00 00          mov    $0x7,%ecx                  # ecx=0x7
+  401160:       89 ca                   mov    %ecx,%edx                  # edx=ecx=0x7
+  401162:       2b 10                   sub    (%rax),%edx                # edx=edx-(rax); subtract 7 with user input which is essentially 7-orginal value
+  401164:       89 10                   mov    %edx,(%rax)                # put new result in memory
+  401166:       48 83 c0 04             add    $0x4,%rax                  # increment memory by 4
+  40116a:       48 39 f0                cmp    %rsi,%rax                  # rax-rsp
+  40116d:       75 f1                   jne    401160 <phase_6+0x6c>      # loop until all values manipulated
+  40116f:       be 00 00 00 00          mov    $0x0,%esi                  # esi=0
+  401174:       eb 21                   jmp    401197 <phase_6+0xa3>      # jump to address 0x401197
+  401176:       48 8b 52 08             mov    0x8(%rdx),%rdx             # rdx = *(rdx+8)
+  40117a:       83 c0 01                add    $0x1,%eax                  # eax=eax+0x1
+  40117d:       39 c8                   cmp    %ecx,%eax                  # eax-ecx; ecx=0x7
+  40117f:       75 f5                   jne    401176 <phase_6+0x82>      # go through this 6 times
+  401181:       eb 05                   jmp    401188 <phase_6+0x94>      # jump to 0x401188
+  401183:       ba d0 32 60 00          mov    $0x6032d0,%edx             # edx=0x6032d0
+  401188:       48 89 54 74 20          mov    %rdx,0x20(%rsp,%rsi,2)     # rsp+0x20+(rsi*2)=rdx
+  40118d:       48 83 c6 04             add    $0x4,%rsi                  # rsi=rsi+4
+  401191:       48 83 fe 18             cmp    $0x18,%rsi                 # check to see if its the last input
+  401195:       74 14                   je     4011ab <phase_6+0xb7>      # jump to 0x4011ab
+  401197:       8b 0c 34                mov    (%rsp,%rsi,1),%ecx         # ecx contains each transformed number
+  40119a:       83 f9 01                cmp    $0x1,%ecx                  # ecx-0x1
+  40119d:       7e e4                   jle    401183 <phase_6+0x8f>      # jump to address if input <=1
+  40119f:       b8 01 00 00 00          mov    $0x1,%eax                  # eax=0x1
+  4011a4:       ba d0 32 60 00          mov    $0x6032d0,%edx             # edx=0x603d20
+  4011a9:       eb cb                   jmp    401176 <phase_6+0x82>      # jump to address 0x401176
+  4011ab:       48 8b 5c 24 20          mov    0x20(%rsp),%rbx            # address of the first part of the structure
+  4011b0:       48 8d 44 24 28          lea    0x28(%rsp),%rax            # assuming this is the next value
+in the link
+  4011b5:       48 8d 74 24 50          lea    0x50(%rsp),%rsi            # end of the linked list
+  4011ba:       48 89 d9                mov    %rbx,%rcx                  # rcx=rbx; base pointer of struct
+  4011bd:       48 8b 10                mov    (%rax),%rdx                # rdx=(rax)
+  4011c0:       48 89 51 08             mov    %rdx,0x8(%rcx)             # *(rcx+8)=rdx
+  4011c4:       48 83 c0 08             add    $0x8,%rax                  # rax=rax+8; get next address
+  4011c8:       48 39 f0                cmp    %rsi,%rax                  # rax-rsi; see if made it last link
+  4011cb:       74 05                   je     4011d2 <phase_6+0xde>      # jump once made it through list
+  4011cd:       48 89 d1                mov    %rdx,%rcx                  # rcx=rdx
+  4011d0:       eb eb                   jmp    4011bd <phase_6+0xc9>      # repeat the iterations
+  4011d2:       48 c7 42 08 00 00 00    movq   $0x0,0x8(%rdx)             # *(rdx+8)=0
+  4011d9:       00
+  4011da:       bd 05 00 00 00          mov    $0x5,%ebp                  # edp=0x5; for loop iteration
+  4011df:       48 8b 43 08             mov    0x8(%rbx),%rax             # rax=*(rbx+8)
+  4011e3:       8b 00                   mov    (%rax),%eax                # eax=*rax
+  4011e5:       39 03                   cmp    %eax,(%rbx)                # *rbx-eax
+  4011e7:       7d 05                   jge    4011ee <phase_6+0xfa>      # jump if greater
+  4011e9:       e8 4c 02 00 00          call   40143a <explode_bomb>
+  4011ee:       48 8b 5b 08             mov    0x8(%rbx),%rbx             # point to next in list
+  4011f2:       83 ed 01                sub    $0x1,%ebp                  # decrement counter
+  4011f5:       75 e8                   jne    4011df <phase_6+0xeb>
+  4011f7:       48 83 c4 50             add    $0x50,%rsp
+  4011fb:       5b                      pop    %rbx
+  4011fc:       5d                      pop    %rbp
+  4011fd:       41 5c                   pop    %r12
+  4011ff:       41 5d                   pop    %r13
+  401201:       41 5e                   pop    %r14
+  401203:       c3                      ret
+
+essentially found out that there are 6 input numbers, inputs must be distinct, each input number is 
+manipulated by subtracting it from 7, and the transformed numbers must be between 1 and 6 inclusive
+
+content at the following addresses
+0x6032d0: 0x0000014c 0x00000001 0x006032e0
+0x6032e0: 0x000000a8 0x00000002 0x006032f0
+0x6032f0: 0x0000039c 0x00000003 0x00603300 
+0x603300: 0x000002b3 0x00000004 0x00603310
+0x603310: 0x000001dd 0x00000005 0x00603320
+0x603330: 0x000001bb 0x00000006 0x00000000
+
+looks like this may be a linked list of some sort with the second value being an index, and the third being
+the address to the next link. in the last bit of the code, it is telling us the value needs to be in 
+descending order (first column)
+
+this gives us the order of 3 4 5 6 1 2, but since we need to subtract those by 7 the user inputs will need
+to be 4 3 2 1 6 5
